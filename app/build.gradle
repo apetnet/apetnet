@@ -1,0 +1,132 @@
+buildscript {
+    apply from: '../versions.gradle'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath deps.kotlin.plugin
+        classpath deps.fuerstenau.build_config_plugin
+    }
+}
+
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.11'
+}
+
+apply plugin: "kotlin"
+apply plugin: "kotlin-kapt"
+apply plugin: 'de.fuerstenau.buildconfig'
+
+ext {
+    projectPackageName = "ru.apetnet.desktop"
+    projectClass = projectPackageName + ".Main"
+    projectName = "apetnet"
+    projectVersion = "1.0.0"
+}
+
+javafx {
+    version = "17.0.2"
+    modules = ['javafx.controls', 'javafx.graphics']
+}
+
+def projectPackageName = ext.projectPackageName
+def projectName = ext.projectName
+def projectVersion = ext.projectVersion
+
+mainClassName = ext.projectClass
+project.version = projectVersion
+
+buildConfig {
+    packageName = projectPackageName
+    clsName = 'BuildConfig'
+    buildConfig.appName = projectName
+    version = projectVersion
+
+    buildConfigField 'boolean', 'DEBUG', 'true'
+    buildConfigField 'double', 'DEFAULT_SCALE', '1.0'
+    buildConfigField 'double', 'SCALE_FACTOR', '0.25'
+    buildConfigField 'double', 'MIN_SCALE', '1.0'
+    buildConfigField 'double', 'MAX_SCALE', '4.0'
+    buildConfigField 'double', 'CANVAS_MAX_WIDTH', '2048.0'
+    buildConfigField 'double', 'CANVAS_MAX_HEIGHT', '2048.0'
+
+    buildConfigField 'double', 'POSITION_DIAMETER', '30.0'
+    buildConfigField 'double', 'TRANSITION_SMALLER_SIZE', '15.0'
+    buildConfigField 'double', 'TRANSITION_LARGER_SIZE', '30.0'
+
+    buildConfigField 'int', 'MATRIX_ROW_OFFSET', '1'
+
+    buildConfigField 'boolean', 'FLAG_SCALE_ENABLED', 'DEBUG'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "17"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "17"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
+}
+
+dependencies {
+    implementation deps.kotlin.stdlib
+    implementation deps.gson
+    implementation deps.jundo_framework
+    implementation deps.ui.tornadofx
+    implementation deps.di.guice
+    implementation deps.di.kotlin_guice
+    implementation deps.ejml.all
+    implementation deps.google.guava
+    implementation deps.github.combinatoricslib3
+
+    testImplementation deps.junit.jupiter_api
+    testRuntimeOnly deps.junit.jupiter_engine
+}
+
+test {
+    useJUnitPlatform()
+}
+
+configurations {
+    create("compile")
+}
+
+tasks.withType(Jar) {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+jar {
+    baseName = project.name
+
+    manifest {
+        attributes(
+                "Class-Path": configurations.runtimeClasspath.collect { it.getName() }.join(" "),
+                "Main-Class": mainClassName
+        )
+    }
+
+    from(configurations.runtimeClasspath.collect { entry -> zipTree(entry) }) {
+        exclude "META-INF/MANIFEST.MF"
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+}

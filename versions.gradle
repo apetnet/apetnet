@@ -1,0 +1,59 @@
+ext.deps = [:]
+
+def versions = [:]
+versions.kotlin = '1.5.31'
+versions.junit = '5.8.2'
+versions.tornadofx = '1.7.20'
+versions.gson = '2.8.6'
+versions.guice = '5.0.1'
+versions.kotlin_guice = '1.5.0'
+versions.openjfx = '0.0.8'
+versions.build_config_plugin = "1.1.8"
+versions.jundo_framework = "1.15"
+versions.ejml = "0.41"
+versions.guava = "31.0.1-jre"
+versions.combinatoricslib3 = "3.3.3"
+
+def deps = [:]
+deps.gson = "com.google.code.gson:gson:$versions.gson"
+deps.jundo_framework = "com.gdetotut:jundo-framework:$versions.jundo_framework"
+
+def di = [:]
+di.guice = "com.google.inject:guice:$versions.guice"
+di.kotlin_guice = "dev.misfitlabs.kotlinguice4:kotlin-guice:$versions.kotlin_guice"
+deps.di = di
+
+def kotlin = [:]
+kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+kotlin.test = "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin"
+kotlin.test = "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin"
+kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+deps.kotlin = kotlin
+
+def junit = [:]
+junit.jupiter_api = "org.junit.jupiter:junit-jupiter-api:$versions.junit"
+junit.jupiter_engine = "org.junit.jupiter:junit-jupiter-engine:$versions.junit"
+deps.junit = junit
+
+def ui = [:]
+ui.tornadofx = "no.tornado:tornadofx:$versions.tornadofx"
+deps.ui = ui
+
+def fuerstenau = [:]
+fuerstenau.build_config_plugin = "gradle.plugin.de.fuerstenau:BuildConfigPlugin:$versions.build_config_plugin"
+deps.fuerstenau = fuerstenau
+
+def ejml = [:]
+ejml.all = "org.ejml:ejml-all:$versions.ejml"
+deps.ejml = ejml
+
+def google = [:]
+google.guava = "com.google.guava:guava:$versions.guava"
+deps.google = google
+
+
+def github = [:]
+github.combinatoricslib3 = "com.github.dpaukov:combinatoricslib3:$versions.combinatoricslib3"
+deps.github = github
+
+ext.deps = deps
